@@ -32,7 +32,7 @@ async function run() {
 		const habitCollection = db.collection('habits');
 
 		app.get('/habits', async (req, res) => {
-			const cursor = habitCollection.find();
+			const cursor = habitCollection.find().sort({ createdAt: -1 }).limit(6);
 			const result = await cursor.toArray();
 			res.send(result);
 		});
