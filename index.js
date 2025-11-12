@@ -65,6 +65,12 @@ async function run() {
 			const result = await habitCollection.findOne(query);
 			res.send(result);
 		});
+		app.get('/publicHabits/:id', async (req, res) => {
+			const id = req.params.id;
+			const query = { _id: new ObjectId(id) };
+			const result = await habitCollection.findOne(query);
+			res.send(result);
+		});
 
 
 		app.patch('/habits/:id/complete', async (req, res) => {
@@ -128,6 +134,7 @@ async function run() {
 		});
 
 
+		
 
 
 
