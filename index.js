@@ -49,6 +49,25 @@ async function run() {
 			}
 		});
 
+		app.delete('/my-habit/:id', async(req,res)=>{
+			const id = req.params.id;
+			const query = {_id: new ObjectId(id)}
+			const result = await habitCollection.deleteOne(query);
+			res.send(result);
+
+		})
+
+		app.get('/my-habit', async (req, res) => {
+			const email = req.query.email;
+			const query = {};
+			if (email) {
+				query['user.email'] = email;
+			}
+			const cursor = habitCollection.find(query);
+			const result = await cursor.toArray();
+			res.send(result);
+		});
+
 		app.get('/latest-habits', async (req, res) => {
 			const cursor = habitCollection.find().sort({ createdAt: -1 }).limit(6);
 			const result = await cursor.toArray();
@@ -129,6 +148,7 @@ async function run() {
 				message: 'Habit marked complete',
 				currentStreak,
 				bestStreak,
+				completionHistory,
 				result,
 			});
 		});
@@ -140,13 +160,13 @@ async function run() {
 
 
 
-		app.post('/habits', async (req, res) => {
+		app.post('/publicHabits', async (req, res) => {
 			const newHabit = req.body;
 			const result = await habitCollection.insertOne(newHabit);
 			res.send(result);
 		});
 
-		app.patch('/habits/:id', async (req, res) => {
+		app.patch('/publicHabits/:id', async (req, res) => {
 			const id = req.params.id;
 			const updatedHabits = req.body;
 			const query = { _id: new ObjectId(id) };
