@@ -78,6 +78,17 @@ async function run() {
 			const result = await cursor.toArray();
 			res.send(result);
 		});
+		app.put('/publicHabits/:id', async (req, res) => {
+			const id = req.params.id
+			const data = req.body
+			const query = {_id: new ObjectId(id) }
+			const filter = query
+			const update = {
+				$set: data
+			}
+			const result = await habitCollection.updateOne(filter,update);
+			res.send(result);
+		});
 		app.get('/habits/:id', async (req, res) => {
 			const id = req.params.id;
 			const query = { _id: new ObjectId(id) };
