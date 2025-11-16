@@ -1,15 +1,14 @@
 const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-
+require("dotenv").config()
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
 
-const uri =
-	'mongodb+srv://habitTrackerUser:2q0amos7neAKAVKe@cluster0.fielwth.mongodb.net/?appName=Cluster0';
+const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.fielwth.mongodb.net/?appName=Cluster0`;
 
 const client = new MongoClient(uri, {
 	serverApi: {
@@ -204,6 +203,17 @@ async function run() {
 			const result = await habitCollection.deleteOne(query);
 			res.send(result);
 		});
+
+
+		// handle search
+		app.get('/search',async(req,res)=>{
+			const search_value = req.query.search
+			const result = await habitCollection
+				.find({ title: { $regex: search_value , $options: "i" } })
+				.toArray();
+			res.send(result)
+		})
+
 
 		await client.db('admin').command({ ping: 1 });
 		console.log(
